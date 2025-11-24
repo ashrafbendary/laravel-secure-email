@@ -1,34 +1,36 @@
 {
     "name": "ashrafbendary/laravel-secure-email",
-    "description": "Secure email sending with ZeroBounce validation and AWS SES bounce/complaint handling for Laravel",
+    "description": "Laravel package to monitor and handle AWS SES email complaints, bounces, and deliveries via SNS notifications - Laravel 12 compatible",
     "keywords": [
         "laravel",
-        "email",
+        "laravel-12",
+        "aws",
         "ses",
-        "zerobounce",
-        "email-validation",
-        "bounce-handling",
-        "spam-protection"
+        "sns",
+        "email",
+        "bounce",
+        "complaint",
+        "monitoring"
     ],
     "type": "library",
     "license": "MIT",
     "authors": [
         {
-            "name": "AshrafBendary Group Development Team",
+            "name": "Ashraf Bendary",
             "email": ""
         }
     ],
     "require": {
-        "php": "^8.2|^8.3|^8.4",
-        "illuminate/support": "^11.0|^12.0",
-        "illuminate/database": "^11.0|^12.0",
-        "illuminate/mail": "^11.0|^12.0",
-        "aws/aws-sdk-php": "^3.0",
-        "guzzlehttp/guzzle": "^7.0"
+        "php": "^8.2",
+        "illuminate/support": "^12.0",
+        "illuminate/database": "^12.0",
+        "illuminate/mail": "^12.0",
+        "aws/aws-php-sns-message-validator": "^1.9"
     },
     "require-dev": {
-        "orchestra/testbench": "^9.0|^10.0",
-        "phpunit/phpunit": "^10.0|^11.0"
+        "orchestra/testbench": "^10.0",
+        "phpunit/phpunit": "^11.0",
+        "mockery/mockery": "^1.6"
     },
     "autoload": {
         "psr-4": {
@@ -43,11 +45,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "AshrafBendary\\SecureEmail\\SecureEmailServiceProvider"
-            ],
-            "aliases": {
-                "SecureEmail": "AshrafBendary\\SecureEmail\\Facades\\SecureEmail"
-            }
+                "AshrafBendary\\SecureEmail\\SesMonitorServiceProvider"
+            ]
         }
     },
     "minimum-stability": "dev",
