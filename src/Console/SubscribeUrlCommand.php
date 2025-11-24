@@ -12,7 +12,7 @@ class SubscribeUrlCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'ses-monitor:subscribe-urls 
+    protected $signature = 'secure-email:subscribe-urls 
                             {--type= : Filter by type (bounces, complaints, deliveries)}';
 
     /**

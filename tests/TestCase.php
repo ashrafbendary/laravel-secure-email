@@ -32,6 +32,6 @@ abstract class TestCase extends Orchestra
         ]);
 
         // Setup package configuration
-        $app['config']->set('ses-monitor.enabled', true);
+        $app['config']->set('secure-email.enabled', true);
     }
 }

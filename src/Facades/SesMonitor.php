@@ -20,6 +20,6 @@ class SesMonitor extends Facade
      */
     protected static function getFacadeAccessor(): string
     {
-        return 'ses-monitor';
+        return 'secure-email';
     }
 }

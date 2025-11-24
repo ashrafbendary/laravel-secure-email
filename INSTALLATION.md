@@ -27,10 +27,10 @@ composer require ashrafbendary/laravel-secure-email
 Publish the package configuration file:
 
 ```bash
-php artisan vendor:publish --tag=ses-monitor-config
+php artisan vendor:publish --tag=secure-email-config
 ```
 
-This creates `config/ses-monitor.php` where you can customize the package behavior.
+This creates `config/secure-email.php` where you can customize the package behavior.
 
 ### 3. Run Migrations
 
@@ -119,7 +119,7 @@ Replace `yourdomain.com` with your actual domain.
 Run this command to verify routes are registered:
 
 ```bash
-php artisan route:list | grep ses-monitor
+php artisan route:list | grep secure-email
 ```
 
 You should see three POST routes:
@@ -132,7 +132,7 @@ You should see three POST routes:
 If auto-confirm is enabled, subscriptions should confirm automatically. To check:
 
 ```bash
-php artisan ses-monitor:subscribe-urls
+php artisan secure-email:subscribe-urls
 ```
 
 If there are unconfirmed subscriptions, this command will display them.
@@ -157,7 +157,7 @@ php artisan tinker
 ### Bounce Rules
 
 ```php
-// config/ses-monitor.php
+// config/secure-email.php
 
 'rules' => [
     'bounces' => [
@@ -206,7 +206,7 @@ php artisan tinker
 Change the webhook URL prefix:
 
 ```php
-// config/ses-monitor.php
+// config/secure-email.php
 'route_prefix' => 'webhooks/aws/ses',
 ```
 
@@ -217,7 +217,7 @@ This changes URLs to: `https://yourdomain.com/webhooks/aws/ses/bounces`
 Use your own models:
 
 ```php
-// config/ses-monitor.php
+// config/secure-email.php
 'models' => [
     'subscription' => App\Models\CustomSnsSubscription::class,
     'notification' => App\Models\CustomSesNotification::class,
@@ -273,7 +273,7 @@ Check your logs for "Email blocked by SES Monitor" message.
 1. Check your application is accessible via HTTPS
 2. Ensure routes are registered: `php artisan route:list`
 3. Check logs for errors: `tail -f storage/logs/laravel.log`
-4. Manually confirm using: `php artisan ses-monitor:subscribe-urls`
+4. Manually confirm using: `php artisan secure-email:subscribe-urls`
 
 ### Notifications Not Being Stored
 

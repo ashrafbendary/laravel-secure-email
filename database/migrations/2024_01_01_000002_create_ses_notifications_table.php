@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $connection = config('ses-monitor.database_connection');
-        $tableName = config('ses-monitor.table_names.notifications', 'ses_notifications');
+        $connection = config('secure-email.database_connection');
+        $tableName = config('secure-email.table_names.notifications', 'ses_notifications');
 
         Schema::connection($connection)->create($tableName, function (Blueprint $table) {
             $table->id();
@@ -38,8 +38,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        $connection = config('ses-monitor.database_connection');
-        $tableName = config('ses-monitor.table_names.notifications', 'ses_notifications');
+        $connection = config('secure-email.database_connection');
+        $tableName = config('secure-email.table_names.notifications', 'ses_notifications');
         
         Schema::connection($connection)->dropIfExists($tableName);
     }

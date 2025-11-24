@@ -39,7 +39,7 @@ class SnsSubscription extends Model
      */
     public function getTable(): string
     {
-        return config('ses-monitor.table_names.subscriptions', 'sns_subscriptions');
+        return config('secure-email.table_names.subscriptions', 'sns_subscriptions');
     }
 
     /**
@@ -47,7 +47,7 @@ class SnsSubscription extends Model
      */
     public function getConnectionName(): ?string
     {
-        return config('ses-monitor.database_connection');
+        return config('secure-email.database_connection');
     }
 
     /**

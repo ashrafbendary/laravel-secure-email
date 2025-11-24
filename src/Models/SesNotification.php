@@ -45,7 +45,7 @@ class SesNotification extends Model
      */
     public function getTable(): string
     {
-        return config('ses-monitor.table_names.notifications', 'ses_notifications');
+        return config('secure-email.table_names.notifications', 'ses_notifications');
     }
 
     /**
@@ -53,7 +53,7 @@ class SesNotification extends Model
      */
     public function getConnectionName(): ?string
     {
-        return config('ses-monitor.database_connection');
+        return config('secure-email.database_connection');
     }
 
     /**

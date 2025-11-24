@@ -17,11 +17,11 @@ class SesMonitorServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__.'/../config/ses-monitor.php',
-            'ses-monitor'
+            __DIR__.'/../config/secure-email.php',
+            'secure-email'
         );
 
-        $this->app->singleton('ses-monitor', function ($app) {
+        $this->app->singleton('secure-email', function ($app) {
             return new SesMonitorService();
         });
     }
@@ -44,10 +44,10 @@ class SesMonitorServiceProvider extends ServiceProvider
      */
     protected function registerRoutes(): void
     {
-        if (config('ses-monitor.enabled', true)) {
+        if (config('secure-email.enabled', true)) {
             Route::group([
-                'prefix' => config('ses-monitor.route_prefix', 'aws/sns/ses'),
-                'middleware' => config('ses-monitor.route_middleware', ['api']),
+                'prefix' => config('secure-email.route_prefix', 'aws/sns/ses'),
+                'middleware' => config('secure-email.route_middleware', ['api']),
             ], function () {
                 $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
             });
@@ -61,12 +61,12 @@ class SesMonitorServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../config/ses-monitor.php' => config_path('ses-monitor.php'),
-            ], 'ses-monitor-config');
+                __DIR__.'/../config/secure-email.php' => config_path('secure-email.php'),
+            ], 'secure-email-config');
 
             $this->publishes([
                 __DIR__.'/../database/migrations' => database_path('migrations'),
-            ], 'ses-monitor-migrations');
+            ], 'secure-email-migrations');
         }
     }
 
@@ -87,7 +87,7 @@ class SesMonitorServiceProvider extends ServiceProvider
      */
     protected function registerEventListeners(): void
     {
-        if (config('ses-monitor.enabled', true)) {
+        if (config('secure-email.enabled', true)) {
             Event::listen(MessageSending::class, CheckEmailBeforeSending::class);
         }
     }

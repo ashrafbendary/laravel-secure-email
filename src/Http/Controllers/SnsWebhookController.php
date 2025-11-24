@@ -87,7 +87,7 @@ class SnsWebhookController extends Controller
         }
 
         // Validate SNS message signature if enabled
-        if (config('ses-monitor.validate_sns_messages', true)) {
+        if (config('secure-email.validate_sns_messages', true)) {
             try {
                 $validator = new MessageValidator();
                 $snsMessage = Message::fromRawPostData();
@@ -125,7 +125,7 @@ class SnsWebhookController extends Controller
         );
 
         // Auto-confirm if enabled
-        if (config('ses-monitor.auto_confirm_subscriptions', true)) {
+        if (config('secure-email.auto_confirm_subscriptions', true)) {
             $this->confirmSubscription($subscribeUrl, $subscription);
         }
 
@@ -217,7 +217,7 @@ class SnsWebhookController extends Controller
                 'sent_at' => isset($mail['timestamp']) ? new \DateTime($mail['timestamp']) : null,
             ]);
 
-            if (config('ses-monitor.events.bounce', true)) {
+            if (config('secure-email.events.bounce', true)) {
                 event(new SesBounceReceived($sesNotification));
             }
         }
@@ -251,7 +251,7 @@ class SnsWebhookController extends Controller
                 'sent_at' => isset($mail['timestamp']) ? new \DateTime($mail['timestamp']) : null,
             ]);
 
-            if (config('ses-monitor.events.complaint', true)) {
+            if (config('secure-email.events.complaint', true)) {
                 event(new SesComplaintReceived($sesNotification));
             }
         }
@@ -278,7 +278,7 @@ class SnsWebhookController extends Controller
                 'sent_at' => isset($mail['timestamp']) ? new \DateTime($mail['timestamp']) : null,
             ]);
 
-            if (config('ses-monitor.events.delivery', true)) {
+            if (config('secure-email.events.delivery', true)) {
                 event(new SesDeliveryReceived($sesNotification));
             }
         }

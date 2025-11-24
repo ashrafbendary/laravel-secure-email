@@ -59,7 +59,7 @@ class SesMonitorService
      */
     protected function shouldBlockDueToBounces(string $email, ?string $subject): bool
     {
-        $bounceRules = config('ses-monitor.rules.bounces', []);
+        $bounceRules = config('secure-email.rules.bounces', []);
 
         if (!($bounceRules['enabled'] ?? true)) {
             return false;
@@ -90,7 +90,7 @@ class SesMonitorService
      */
     protected function shouldBlockDueToComplaints(string $email, ?string $subject): bool
     {
-        $complaintRules = config('ses-monitor.rules.complaints', []);
+        $complaintRules = config('secure-email.rules.complaints', []);
 
         if (!($complaintRules['enabled'] ?? true)) {
             return false;

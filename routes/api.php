@@ -2,17 +2,17 @@
 
 use Illuminate\Support\Facades\Route;
 
-$controller = config('ses-monitor.controller');
-$routes = config('ses-monitor.routes');
+$controller = config('secure-email.controller');
+$routes = config('secure-email.routes');
 
 // Bounce notifications route
 Route::post($routes['bounces'], [$controller, 'handleBounce'])
-    ->name('ses-monitor.bounces');
+    ->name('secure-email.bounces');
 
 // Complaint notifications route
 Route::post($routes['complaints'], [$controller, 'handleComplaint'])
-    ->name('ses-monitor.complaints');
+    ->name('secure-email.complaints');
 
 // Delivery notifications route
 Route::post($routes['deliveries'], [$controller, 'handleDelivery'])
-    ->name('ses-monitor.deliveries');
+    ->name('secure-email.deliveries');

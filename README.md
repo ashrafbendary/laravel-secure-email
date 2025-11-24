@@ -39,10 +39,10 @@ composer require ashrafbendary/laravel-secure-email
 
 ```bash
 # Publish config file
-php artisan vendor:publish --tag=ses-monitor-config
+php artisan vendor:publish --tag=secure-email-config
 
 # Publish migrations (optional, auto-loaded by default)
-php artisan vendor:publish --tag=ses-monitor-migrations
+php artisan vendor:publish --tag=secure-email-migrations
 
 # Run migrations
 php artisan migrate
@@ -112,7 +112,7 @@ The package will automatically confirm subscriptions when auto-confirm is enable
 
 ```bash
 # View unconfirmed subscriptions
-php artisan ses-monitor:subscribe-urls
+php artisan secure-email:subscribe-urls
 
 # Or manually visit the SubscribeURL in your database
 ```
@@ -257,7 +257,7 @@ class HandleSesBounce
 You can use your own models by extending the package models:
 
 ```php
-// In your config/ses-monitor.php
+// In your config/secure-email.php
 'models' => [
     'subscription' => App\Models\CustomSnsSubscription::class,
     'notification' => App\Models\CustomSesNotification::class,
@@ -269,7 +269,7 @@ You can use your own models by extending the package models:
 Customize the webhook endpoints:
 
 ```php
-// In your config/ses-monitor.php
+// In your config/secure-email.php
 'route_prefix' => 'webhooks/ses',
 'routes' => [
     'bounces' => 'bounce-notifications',
