@@ -88,4 +88,4 @@ MIT
 
 ## Credits
 
-Created by [AshrafBendary Group Development Team)
+Created by [AshrafBendary Group Development Team]
