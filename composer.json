@@ -1,0 +1,55 @@
+{
+    "name": "ashrafbendary/laravel-secure-email",
+    "description": "Secure email sending with ZeroBounce validation and AWS SES bounce/complaint handling for Laravel",
+    "keywords": [
+        "laravel",
+        "email",
+        "ses",
+        "zerobounce",
+        "email-validation",
+        "bounce-handling",
+        "spam-protection"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "AshrafBendary Group Development Team",
+            "email": ""
+        }
+    ],
+    "require": {
+        "php": "^8.2|^8.3|^8.4",
+        "illuminate/support": "^11.0|^12.0",
+        "illuminate/database": "^11.0|^12.0",
+        "illuminate/mail": "^11.0|^12.0",
+        "aws/aws-sdk-php": "^3.0",
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0|^10.0",
+        "phpunit/phpunit": "^10.0|^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "AshrafBendary\\SecureEmail\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AshrafBendary\\SecureEmail\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "AshrafBendary\\SecureEmail\\SecureEmailServiceProvider"
+            ],
+            "aliases": {
+                "SecureEmail": "AshrafBendary\\SecureEmail\\Facades\\SecureEmail"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
