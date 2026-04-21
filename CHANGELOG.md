@@ -16,9 +16,18 @@ All notable changes to `laravel-secure-email` will be documented in this file.
 
 ### Added
 - PHP 8.5 to the CI test matrix (composer constraint `^8.3` already permits 8.3, 8.4, and 8.5)
+- Feature tests for `SnsWebhookController` (bounce / complaint / delivery processing, subscription confirmation with Http fake, validation failure paths)
+- Feature tests for the `CheckEmailBeforeSending` listener (allow / block paths, disabled-package short-circuit)
+- Feature tests for the `secure-email:subscribe-urls` Artisan command
 
 ### Fixed
 - `it_can_detect_permanent_bounces` test now uses unique generated addresses so the negative assertion is independent of the positive one
+- Custom model resolution (`secure-email.models.notification`, `secure-email.models.subscription`) is now actually honored by `SnsWebhookController`, `SesMonitorService`, `CheckEmailBeforeSending`, and `SubscribeUrlCommand`. Previously these classes hardcoded the default models, silently ignoring the documented config
+- `SnsWebhookController::confirmSubscription` now uses `Http::timeout(10)->get()` instead of `file_get_contents`, giving it a bounded timeout and removing the dependency on `allow_url_fopen`
+- `SnsWebhookController::handleNotification` now catches `\Throwable` instead of `\Exception`, so `Error`/`TypeError` return the generic 500 response instead of leaking a stack trace
+
+### Removed
+- Unused `AshrafBendary\SecureEmail\Exceptions\EmailBlockedException` class (imported but never thrown)
 
 ## v1.0.0 - 2024-11-24
 

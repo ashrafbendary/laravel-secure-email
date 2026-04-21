@@ -5,10 +5,15 @@ namespace AshrafBendary\SecureEmail\Listeners;
 use Illuminate\Mail\Events\MessageSending;
 use Illuminate\Support\Facades\Log;
 use AshrafBendary\SecureEmail\Models\SesNotification;
-use AshrafBendary\SecureEmail\Exceptions\EmailBlockedException;
+
 
 class CheckEmailBeforeSending
 {
+    protected function notificationModel(): string
+    {
+        return config('secure-email.models.notification') ?: SesNotification::class;
+    }
+
     /**
      * Handle the event.
      */
@@ -97,10 +102,12 @@ class CheckEmailBeforeSending
         if (!($bounceRules['enabled'] ?? true)) {
             return false;
         }
+        
+        $notificationModel = $this->notificationModel();
 
         // Block permanent bounces immediately if configured
         if (($bounceRules['block_permanent_bounces'] ?? true) && 
-            SesNotification::hasPermanentBounce($email)) {
+            $notificationModel::hasPermanentBounce($email)) {
             return true;
         }
 
@@ -109,7 +116,7 @@ class CheckEmailBeforeSending
         $checkBySubject = $bounceRules['check_by_subject'] ?? false;
         $daysToCheck = $bounceRules['days_to_check'] ?? 30;
 
-        $bounceCount = SesNotification::countBouncesForEmail(
+        $bounceCount = $notificationModel::countBouncesForEmail(
             $email,
             $checkBySubject ? $subject : null,
             $daysToCheck
@@ -133,7 +140,9 @@ class CheckEmailBeforeSending
         $checkBySubject = $complaintRules['check_by_subject'] ?? true;
         $daysToCheck = $complaintRules['days_to_check'] ?? 0;
 
-        $complaintCount = SesNotification::countComplaintsForEmail(
+        $notificationModel = $this->notificationModel();
+        
+        $complaintCount = $notificationModel::countComplaintsForEmail(
             $email,
             $checkBySubject ? $subject : null,
             $daysToCheck

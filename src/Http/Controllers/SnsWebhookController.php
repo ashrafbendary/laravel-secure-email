@@ -5,6 +5,7 @@ namespace AshrafBendary\SecureEmail\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
@@ -16,6 +17,16 @@ use AshrafBendary\SecureEmail\Events\SesDeliveryReceived;
 
 class SnsWebhookController extends Controller
 {
+    protected function notificationModel(): string
+    {
+        return config('secure-email.models.notification') ?: SesNotification::class;
+    }
+
+    protected function subscriptionModel(): string
+    {
+        return config('secure-email.models.subscription') ?: SnsSubscription::class;
+    }
+
     /**
      * Handle bounce notifications.
      */
@@ -65,7 +76,7 @@ class SnsWebhookController extends Controller
                     Log::warning('Unknown SNS message type', ['type' => $messageType]);
                     return response()->json(['error' => 'Unknown message type'], 400);
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('Error handling SNS notification', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
@@ -92,7 +103,7 @@ class SnsWebhookController extends Controller
                 $validator = new MessageValidator();
                 $snsMessage = Message::fromRawPostData();
                 $validator->validate($snsMessage);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 Log::error('SNS message validation failed', ['error' => $e->getMessage()]);
                 return null;
             }
@@ -114,8 +125,9 @@ class SnsWebhookController extends Controller
             return response()->json(['error' => 'Missing required fields'], 400);
         }
 
-        // Store or update subscription
-        $subscription = SnsSubscription::updateOrCreate(
+        $subscriptionModel = $this->subscriptionModel();
+
+        $subscription = $subscriptionModel::updateOrCreate(
             ['topic_arn' => $topicArn],
             [
                 'type' => $type,
@@ -135,21 +147,25 @@ class SnsWebhookController extends Controller
     /**
      * Confirm SNS subscription.
      */
-    protected function confirmSubscription(string $subscribeUrl, SnsSubscription $subscription): void
+    protected function confirmSubscription(string $subscribeUrl, \Illuminate\Database\Eloquent\Model $subscription): void
     {
         try {
-            $response = file_get_contents($subscribeUrl);
-            
-            if ($response !== false) {
-                $data = json_decode($response, true);
-                $subscriptionArn = $data['SubscribeResponse']['SubscribeResult']['SubscriptionArn'] ?? null;
-                
-                if ($subscriptionArn) {
-                    $subscription->markAsConfirmed($subscriptionArn);
-                    Log::info('SNS subscription confirmed', ['subscription_arn' => $subscriptionArn]);
-                }
+            $response = Http::timeout(10)->get($subscribeUrl);
+
+            if (!$response->successful()) {
+                Log::warning('SNS subscribe URL returned non-2xx', [
+                    'status' => $response->status(),
+                ]);
+                return;
             }
-        } catch (\Exception $e) {
+            $data = $response->json();
+            $subscriptionArn = $data['SubscribeResponse']['SubscribeResult']['SubscriptionArn'] ?? null;
+
+            if ($subscriptionArn) {
+                $subscription->markAsConfirmed($subscriptionArn);
+                Log::info('SNS subscription confirmed', ['subscription_arn' => $subscriptionArn]);
+            }
+        } catch (\Throwable $e) {
             Log::error('Failed to confirm SNS subscription', ['error' => $e->getMessage()]);
         }
     }
@@ -195,7 +211,8 @@ class SnsWebhookController extends Controller
     {
         $bounce = $notification['bounce'] ?? [];
         $mail = $notification['mail'] ?? [];
-        
+        $notificationModel = $this->notificationModel();
+
         $bouncedRecipients = $bounce['bouncedRecipients'] ?? [];
 
         foreach ($bouncedRecipients as $recipient) {
@@ -205,7 +222,7 @@ class SnsWebhookController extends Controller
                 continue;
             }
 
-            $sesNotification = SesNotification::create([
+            $sesNotification = $notificationModel::create([
                 'message_id' => $mail['messageId'] ?? null,
                 'type' => 'Bounce',
                 'notification_type' => $bounce['bounceType'] ?? null,
@@ -230,7 +247,8 @@ class SnsWebhookController extends Controller
     {
         $complaint = $notification['complaint'] ?? [];
         $mail = $notification['mail'] ?? [];
-        
+        $notificationModel = $this->notificationModel();
+
         $complainedRecipients = $complaint['complainedRecipients'] ?? [];
 
         foreach ($complainedRecipients as $recipient) {
@@ -240,7 +258,7 @@ class SnsWebhookController extends Controller
                 continue;
             }
 
-            $sesNotification = SesNotification::create([
+            $sesNotification = $notificationModel::create([
                 'message_id' => $mail['messageId'] ?? null,
                 'type' => 'Complaint',
                 'notification_type' => $complaint['complaintFeedbackType'] ?? 'abuse',
@@ -264,11 +282,12 @@ class SnsWebhookController extends Controller
     {
         $delivery = $notification['delivery'] ?? [];
         $mail = $notification['mail'] ?? [];
-        
+        $notificationModel = $this->notificationModel();
+
         $recipients = $delivery['recipients'] ?? [];
 
         foreach ($recipients as $email) {
-            $sesNotification = SesNotification::create([
+            $sesNotification = $notificationModel::create([
                 'message_id' => $mail['messageId'] ?? null,
                 'type' => 'Delivery',
                 'notification_type' => 'delivered',

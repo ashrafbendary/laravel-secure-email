@@ -6,12 +6,17 @@ use AshrafBendary\SecureEmail\Models\SesNotification;
 
 class SesMonitorService
 {
+    protected function notificationModel(): string
+    {
+        return config('secure-email.models.notification') ?: SesNotification::class;
+    }
+
     /**
      * Check if an email has a permanent bounce.
      */
     public function hasPermanentBounce(string $email): bool
     {
-        return SesNotification::hasPermanentBounce($email);
+        return $this->notificationModel()::hasPermanentBounce($email);
     }
 
     /**
@@ -22,7 +27,7 @@ class SesMonitorService
         ?string $subject = null,
         int $days = 0
     ): int {
-        return SesNotification::countBouncesForEmail($email, $subject, $days);
+        return $this->notificationModel()::countBouncesForEmail($email, $subject, $days);
     }
 
     /**
@@ -33,7 +38,7 @@ class SesMonitorService
         ?string $subject = null,
         int $days = 0
     ): int {
-        return SesNotification::countComplaintsForEmail($email, $subject, $days);
+        return $this->notificationModel()::countComplaintsForEmail($email, $subject, $days);
     }
 
     /**
@@ -114,7 +119,7 @@ class SesMonitorService
      */
     public function getBounces()
     {
-        return SesNotification::bounces()->get();
+        return $this->notificationModel()::bounces()->get();
     }
 
     /**
@@ -122,7 +127,7 @@ class SesMonitorService
      */
     public function getComplaints()
     {
-        return SesNotification::complaints()->get();
+        return $this->notificationModel()::complaints()->get();
     }
 
     /**
@@ -130,7 +135,7 @@ class SesMonitorService
      */
     public function getDeliveries()
     {
-        return SesNotification::deliveries()->get();
+        return $this->notificationModel()::deliveries()->get();
     }
 
     /**
@@ -138,6 +143,6 @@ class SesMonitorService
      */
     public function getRecentNotifications(int $days = 30)
     {
-        return SesNotification::recent($days)->get();
+        return $this->notificationModel()::recent($days)->get();
     }
 }

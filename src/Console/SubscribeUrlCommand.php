@@ -7,6 +7,11 @@ use AshrafBendary\SecureEmail\Models\SnsSubscription;
 
 class SubscribeUrlCommand extends Command
 {
+    protected function subscriptionModel(): string
+    {
+        return config('secure-email.models.subscription') ?: SnsSubscription::class;
+    }
+
     /**
      * The name and signature of the console command.
      *
@@ -29,7 +34,7 @@ class SubscribeUrlCommand extends Command
     {
         $type = $this->option('type');
         
-        $query = SnsSubscription::unconfirmed();
+        $query = $this->subscriptionModel()::unconfirmed();
         
         if ($type) {
             $query->ofType($type);
