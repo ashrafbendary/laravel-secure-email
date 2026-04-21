@@ -6,7 +6,7 @@
 
 A production-ready Laravel package to monitor and handle AWS SES email complaints, bounces, and deliveries via SNS notifications. Automatically prevents sending emails to addresses that have bounced or complained.
 
-**Compatible with Laravel 12** (PHP 8.2+)
+**Compatible with Laravel 13** (PHP 8.3+)
 
 ## Features
 
@@ -19,12 +19,12 @@ A production-ready Laravel package to monitor and handle AWS SES email complaint
 - ✅ **Permanent Bounce Protection**: Block emails with permanent bounces immediately
 - ✅ **Subject-based Filtering**: Count bounces/complaints by email subject
 - ✅ **Time-based Rules**: Set time windows for counting notifications
-- ✅ **Laravel 12 Compatible**: Built for Laravel 12 with PHP 8.2+
+- ✅ **Laravel 13 Compatible**: Built for Laravel 13 with PHP 8.3+
 
 ## Requirements
 
-- PHP 8.2 or higher
-- Laravel 12.x
+- PHP 8.3 or higher
+- Laravel 13.x
 - AWS SES account with SNS configured
 
 ## Installation
@@ -296,7 +296,7 @@ If you discover any security-related issues, please email [email protected] inst
 ## Credits
 
 - Inspired by [oza75/laravel-ses-complaints](https://github.com/oza75/laravel-ses-complaints)
-- Built for Laravel 12 compatibility
+- Built for Laravel 13 compatibility
 
 ## License
 
@@ -308,8 +308,8 @@ Please see [CHANGELOG](CHANGELOG.md) for recent changes.
 
 ## Support
 
-- Laravel 12.x
-- PHP 8.2+
+- Laravel 13.x
+- PHP 8.3+
 
 For older Laravel versions, please use a different package.
 

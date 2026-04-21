@@ -5,10 +5,10 @@ namespace AshrafBendary\SecureEmail\Tests\Feature;
 use AshrafBendary\SecureEmail\Tests\TestCase;
 use AshrafBendary\SecureEmail\Models\SnsSubscription;
 use AshrafBendary\SecureEmail\Models\SesNotification;
-
+use PHPUnit\Framework\Attributes\Test;
 class SesNotificationTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_can_create_a_bounce_notification(): void
     {
         $notification = SesNotification::create([
@@ -33,7 +33,7 @@ class SesNotificationTest extends TestCase
         $this->assertTrue($notification->isPermanentBounce());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_count_bounces_for_an_email(): void
     {
         // Create multiple bounce notifications
@@ -54,28 +54,31 @@ class SesNotificationTest extends TestCase
         $this->assertEquals(3, $count);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_detect_permanent_bounces(): void
     {
+        $bouncedEmail = 'bounced-' . uniqid() . '@' . 'example.test';
+        $cleanEmail = 'clean-' . uniqid() . '@' . 'example.test';
+
         SesNotification::create([
             'message_id' => 'test-permanent',
             'type' => 'Bounce',
             'notification_type' => 'Permanent',
-            'email' => '[email protected]',
+            'email' => $bouncedEmail,
             'bounce_type' => 'Permanent',
             'notification_data' => [],
         ]);
 
         $this->assertTrue(
-            SesNotification::hasPermanentBounce('[email protected]')
+            SesNotification::hasPermanentBounce($bouncedEmail)
         );
         
         $this->assertFalse(
-            SesNotification::hasPermanentBounce('[email protected]')
+            SesNotification::hasPermanentBounce($cleanEmail)
         );
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_a_complaint_notification(): void
     {
         $notification = SesNotification::create([
@@ -92,7 +95,7 @@ class SesNotificationTest extends TestCase
         $this->assertFalse($notification->isBounce());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_query_notifications_by_type(): void
     {
         // Create bounce
@@ -115,7 +118,7 @@ class SesNotificationTest extends TestCase
         $this->assertEquals(1, SesNotification::complaints()->count());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_sns_subscription(): void
     {
         $subscription = SnsSubscription::create([

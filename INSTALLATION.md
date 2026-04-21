@@ -6,8 +6,8 @@ This guide will walk you through the complete installation and setup process for
 
 Before you begin, ensure you have:
 
-1. **Laravel 12 Application**: A working Laravel 12 installation
-2. **PHP 8.2+**: Your server must be running PHP 8.2 or higher
+1. **Laravel 13 Application**: A working Laravel 13 installation
+2. **PHP 8.3+**: Your server must be running PHP 8.3 or higher
 3. **AWS Account**: Active AWS account with SES configured
 4. **Verified SES Domain/Email**: At least one verified domain or email in SES
 5. **Database**: MySQL, PostgreSQL, or any Laravel-supported database

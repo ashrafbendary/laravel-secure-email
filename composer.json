@@ -1,9 +1,9 @@
 {
     "name": "ashrafbendary/laravel-secure-email",
-    "description": "Laravel package to monitor and handle AWS SES email complaints, bounces, and deliveries via SNS notifications - Laravel 12 compatible",
+    "description": "Laravel package to monitor and handle AWS SES email complaints, bounces, and deliveries via SNS notifications - Laravel 13 compatible",
     "keywords": [
         "laravel",
-        "laravel-12",
+        "laravel-13",
         "aws",
         "ses",
         "sns",
@@ -21,15 +21,15 @@
         }
     ],
     "require": {
-        "php": "^8.2",
-        "illuminate/support": "^12.0",
-        "illuminate/database": "^12.0",
-        "illuminate/mail": "^12.0",
+        "php": "^8.3",
+        "illuminate/support": "^13.0",
+        "illuminate/database": "^13.0",
+        "illuminate/mail": "^13.0",
         "aws/aws-php-sns-message-validator": "^1.9"
     },
     "require-dev": {
-        "orchestra/testbench": "^10.0",
-        "phpunit/phpunit": "^11.0",
+        "orchestra/testbench": "^11.0",
+        "phpunit/phpunit": "^11.5|^12.0",
         "mockery/mockery": "^1.6"
     },
     "autoload": {

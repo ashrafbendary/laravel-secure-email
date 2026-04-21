@@ -4,6 +4,7 @@ composer.lock
 composer.phar
 phpunit.xml
 .phpunit.result.cache
+.phpunit.cache/
 .php_cs.cache
 .php-cs-fixer.cache
 .idea/
