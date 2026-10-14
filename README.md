@@ -291,7 +291,7 @@ composer test
 
 ## Security
 
-If you discover any security-related issues, please email [email protected] instead of using the issue tracker.
+If you discover a security vulnerability, please report it privately via [GitHub Security Advisories](https://github.com/ashrafbendary/laravel-secure-email/security/advisories/new) instead of using the issue tracker.
 
 ## Credits
 
