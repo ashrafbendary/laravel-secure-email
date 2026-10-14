@@ -136,6 +136,46 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Entry-time Validation
+    |--------------------------------------------------------------------------
+    |
+    | Used by the DeliverableEmail rule and SesMonitor::isDeliverable() when
+    | an address is entered (registration, profile update), separately from
+    | the send-time listener above.
+    |
+    | driver: null        -> SES history only (no third-party calls)
+    |         'zerobounce'-> SES history + ZeroBounce /v2/validate
+    |         FQCN        -> your own class implementing
+    |                        AshrafBendary\SecureEmail\Validation\EmailValidator
+    |
+    | Provider outages soft-fail: the address is allowed and a warning is
+    | logged (domain only), so an API outage cannot lock users out.
+    |
+    */
+    'validation' => [
+        'driver' => env('SECURE_EMAIL_VALIDATOR'),
+
+        // Apply the bounce / complaint rules above to entered addresses too
+        'check_history' => env('SECURE_EMAIL_VALIDATION_CHECK_HISTORY', true),
+
+        'zerobounce' => [
+            // A blank key disables the lookup transparently
+            'api_key' => env('ZEROBOUNCE_API_KEY'),
+            'base_url' => env('ZEROBOUNCE_BASE_URL', 'https://api.zerobounce.net/v2'),
+            'timeout' => (int) env('ZEROBOUNCE_TIMEOUT', 10),
+
+            // Accepted verdicts are cached to save credits; rejections never are
+            'cache_store' => env('ZEROBOUNCE_CACHE_STORE'),
+            'cache_ttl' => (int) env('ZEROBOUNCE_CACHE_TTL', 86400),
+
+            // Statuses treated as a hard reject. "unknown" and "catch-all"
+            // are accepted on purpose: many real corporate mailboxes return them.
+            'rejected_statuses' => ['invalid', 'spamtrap', 'abuse', 'do_not_mail'],
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Events
     |--------------------------------------------------------------------------
     |

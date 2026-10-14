@@ -10,6 +10,8 @@ use AshrafBendary\SecureEmail\Models\SesNotification;
  * @method static int countBouncesForEmail(string $email, ?string $subject = null, int $days = 0)
  * @method static int countComplaintsForEmail(string $email, ?string $subject = null, int $days = 0)
  * @method static bool shouldBlockEmail(string $email, ?string $subject = null)
+ * @method static bool isDeliverable(string $email)
+ * @method static \AshrafBendary\SecureEmail\Validation\DeliverabilityResult checkDeliverability(string $email)
  * 
  * @see \AshrafBendary\SecureEmail\SesMonitorService
  */

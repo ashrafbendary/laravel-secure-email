@@ -2,6 +2,17 @@
 
 All notable changes to `laravel-secure-email` will be documented in this file.
 
+## v3.1.0 - 2026-10-14
+
+### Added
+- Entry-time address validation: `DeliverableEmail` validation rule and `SesMonitor::isDeliverable()` / `SesMonitor::checkDeliverability()`, applying the configured bounce and complaint rules to an address before it is stored
+- Optional ZeroBounce driver (`SECURE_EMAIL_VALIDATOR=zerobounce`) with cached accepted verdicts, uncached rejections, soft-fail on outages, and domain-only logging
+- Pluggable `EmailValidator` contract for other providers
+- English and Arabic validation messages, publishable with the `secure-email-translations` tag
+
+### Changed
+- `SesMonitorService` is now registered as a container singleton under its class name, aliased to `secure-email`
+
 ## v3.0.0 - 2026-10-14
 
 ### Changed

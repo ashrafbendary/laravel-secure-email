@@ -31,6 +31,8 @@ abstract class TestCase extends Orchestra
             'prefix'   => '',
         ]);
 
+        $app['config']->set('cache.default', 'array');
+
         // Setup package configuration
         $app['config']->set('secure-email.enabled', true);
     }
