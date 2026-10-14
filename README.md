@@ -19,6 +19,7 @@ A production-ready Laravel package to monitor and handle AWS SES email complaint
 - ✅ **Permanent Bounce Protection**: Block emails with permanent bounces immediately
 - ✅ **Subject-based Filtering**: Count bounces/complaints by email subject
 - ✅ **Time-based Rules**: Set time windows for counting notifications
+- ✅ **Entry-time Validation**: `DeliverableEmail` rule with optional ZeroBounce lookup (cached, soft-fails on outages)
 - ✅ **Laravel 13 Compatible**: Built for Laravel 13 with PHP 8.3+
 
 ## Requirements
@@ -151,6 +152,45 @@ $bounceCount = SesNotification::countBouncesForEmail(
 // Count complaints
 $complaintCount = SesNotification::countComplaintsForEmail('[email protected]');
 ```
+
+### Validating Addresses at Entry (optional ZeroBounce)
+
+The listener above guards every send. To stop bad addresses before they are
+saved (registration, profile update, admin forms), use the `DeliverableEmail`
+rule. It applies your bounce and complaint rules to the entered address and,
+optionally, a real-time ZeroBounce lookup.
+
+```php
+use AshrafBendary\SecureEmail\Rules\DeliverableEmail;
+
+$request->validate([
+    'email' => ['required', 'email:rfc,strict', new DeliverableEmail],
+]);
+```
+
+Enable ZeroBounce in `.env` (leave the driver empty to use SES history only):
+
+```env
+SECURE_EMAIL_VALIDATOR=zerobounce
+ZEROBOUNCE_API_KEY=your-key
+```
+
+- `invalid`, `spamtrap`, `abuse` and `do_not_mail` are rejected (configurable). `unknown` and `catch-all` pass, since many real corporate mailboxes return them.
+- Accepted verdicts are cached for 24 hours to save credits; rejections are never cached, so a corrected address is re-checked.
+- API outages, timeouts and credit errors soft-fail: the address is allowed and a warning is logged with the domain only, never the full address or key.
+- Messages ship in English and Arabic (`php artisan vendor:publish --tag=secure-email-translations`).
+
+Outside forms:
+
+```php
+use AshrafBendary\SecureEmail\Facades\SesMonitor;
+
+SesMonitor::isDeliverable('user@example.com');           // bool
+SesMonitor::checkDeliverability('user@example.com')->reason; // null, permanent_bounce, bounces, complaints, undeliverable
+```
+
+To use another provider, set `SECURE_EMAIL_VALIDATOR` to a class implementing
+`AshrafBendary\SecureEmail\Validation\EmailValidator`.
 
 ### Querying Notifications
 

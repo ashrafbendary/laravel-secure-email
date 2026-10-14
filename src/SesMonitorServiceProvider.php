@@ -8,6 +8,11 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Mail\Events\MessageSending;
 use AshrafBendary\SecureEmail\Console\SubscribeUrlCommand;
 use AshrafBendary\SecureEmail\Listeners\CheckEmailBeforeSending;
+use AshrafBendary\SecureEmail\Validation\DeliverabilityChecker;
+use AshrafBendary\SecureEmail\Validation\EmailValidator;
+use AshrafBendary\SecureEmail\Validation\NullValidator;
+use AshrafBendary\SecureEmail\Validation\ZeroBounceValidator;
+use InvalidArgumentException;
 
 class SesMonitorServiceProvider extends ServiceProvider
 {
@@ -21,9 +26,43 @@ class SesMonitorServiceProvider extends ServiceProvider
             'secure-email'
         );
 
-        $this->app->singleton('secure-email', function ($app) {
-            return new SesMonitorService();
+        $this->app->singleton(SesMonitorService::class);
+        $this->app->alias(SesMonitorService::class, 'secure-email');
+
+        $this->app->singleton(EmailValidator::class, function ($app) {
+            $driver = config('secure-email.validation.driver');
+
+            return match (true) {
+                $driver === null, $driver === '', $driver === 'null', $driver === 'none' => new NullValidator(),
+                $driver === 'zerobounce' => new ZeroBounceValidator((array) config('secure-email.validation.zerobounce', [])),
+                default => $this->customValidator((string) $driver),
+            };
         });
+
+        $this->app->singleton(DeliverabilityChecker::class, function ($app) {
+            return new DeliverabilityChecker(
+                $app->make(SesMonitorService::class),
+                $app->make(EmailValidator::class),
+            );
+        });
+    }
+
+    /**
+     * Resolve a user-supplied validator class name.
+     */
+    protected function customValidator(string $class): EmailValidator
+    {
+        $validator = $this->app->make($class);
+
+        if (! $validator instanceof EmailValidator) {
+            throw new InvalidArgumentException(sprintf(
+                'secure-email.validation.driver must be "zerobounce", null, or a class implementing %s; got %s.',
+                EmailValidator::class,
+                $class,
+            ));
+        }
+
+        return $validator;
     }
 
     /**
@@ -32,7 +71,8 @@ class SesMonitorServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'secure-email');
+
         $this->registerRoutes();
         $this->registerPublishing();
         $this->registerCommands();
@@ -67,6 +107,10 @@ class SesMonitorServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../database/migrations' => database_path('migrations'),
             ], 'secure-email-migrations');
+
+            $this->publishes([
+                __DIR__.'/../lang' => $this->app->langPath('vendor/secure-email'),
+            ], 'secure-email-translations');
         }
     }
 

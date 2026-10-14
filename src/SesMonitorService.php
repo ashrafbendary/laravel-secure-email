@@ -3,6 +3,8 @@
 namespace AshrafBendary\SecureEmail;
 
 use AshrafBendary\SecureEmail\Models\SesNotification;
+use AshrafBendary\SecureEmail\Validation\DeliverabilityChecker;
+use AshrafBendary\SecureEmail\Validation\DeliverabilityResult;
 
 class SesMonitorService
 {
@@ -112,6 +114,22 @@ class SesMonitorService
         );
 
         return $complaintCount >= $maxComplaints;
+    }
+
+    /**
+     * Full entry-time check: SES history plus the configured provider.
+     */
+    public function checkDeliverability(string $email): DeliverabilityResult
+    {
+        return app(DeliverabilityChecker::class)->check($email);
+    }
+
+    /**
+     * Whether an address is safe to store (see checkDeliverability()).
+     */
+    public function isDeliverable(string $email): bool
+    {
+        return $this->checkDeliverability($email)->passes;
     }
 
     /**

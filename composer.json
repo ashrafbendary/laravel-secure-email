@@ -10,7 +10,9 @@
         "email",
         "bounce",
         "complaint",
-        "monitoring"
+        "monitoring",
+        "zerobounce",
+        "email-validation"
     ],
     "type": "library",
     "license": "MIT",
