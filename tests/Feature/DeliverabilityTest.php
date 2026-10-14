@@ -147,7 +147,7 @@ class DeliverabilityTest extends TestCase
         $bad = $this->address('bad');
         $this->checker()->check($bad);
         $this->checker()->check($bad);
-        Http::assertSentCount(2);
+        Http::assertSentCount(3); // 1 cached accept + 2 uncached rejects
     }
 
     #[Test]
