@@ -14,10 +14,16 @@
     ],
     "type": "library",
     "license": "MIT",
+    "homepage": "https://github.com/ashrafbendary/laravel-secure-email",
+    "support": {
+        "issues": "https://github.com/ashrafbendary/laravel-secure-email/issues",
+        "source": "https://github.com/ashrafbendary/laravel-secure-email"
+    },
     "authors": [
         {
             "name": "Ashraf Bendary",
-            "email": ""
+            "homepage": "https://github.com/ashrafbendary",
+            "role": "Developer"
         }
     ],
     "require": {

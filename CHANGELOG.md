@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-secure-email` will be documented in this file.
 
+## v3.0.0 - 2026-10-14
+
+### Changed
+- **BREAKING**: Package renamed to `ashrafbendary/laravel-secure-email`; PHP namespace is now `AshrafBendary\SecureEmail`. Update your `composer.json`, `use` statements and any published `config/secure-email.php` class references.
+
+### Removed
+- Local IDE scanner configuration (`.codesight/`) from the repository
+
 ## v2.0.0 - 2026-04-21
 
 ### Changed
